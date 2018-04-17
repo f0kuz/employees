@@ -1,0 +1,30 @@
+{
+  "name": "xsolve-trainee",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://f0kuz.github.io/employees",
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "classnames": "^2.2.5",
+    "gh-pages": "^1.1.0",
+    "moment": "^2.22.1",
+    "node-sass-chokidar": "^1.2.2",
+    "npm-run-all": "^4.1.2",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
+    "react-scripts": "1.1.4",
+    "reactstrap": "^5.0.0-beta.3"
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build-js": "react-scripts build",
+    "build": "npm-run-all build-css build-js",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

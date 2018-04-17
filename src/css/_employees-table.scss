@@ -1,0 +1,46 @@
+.app-title {
+    margin-left: 1rem;
+}
+
+.filters-wrapper {
+    padding: 10px;
+    background: ghostwhite;
+    border: 2px dashed cadetblue;
+    border-radius: 15px;
+}
+
+.employees-table {
+
+    .employees-th {
+        position: relative;
+        cursor: pointer;
+        &:hover {
+            background-color: #e1e6ec;
+        }
+    }
+    .employees-th:after {
+        content: "";
+        display: none;
+        width: 0;
+        height: 0;
+        margin-top: -5px;
+        position: absolute;
+        top: 21%;
+        right: 15px;
+    }
+    .employees-th.asc:after {
+        display: block;
+        border-style: solid;
+        border-width: 0 5px 10px 5px;
+        border-color: transparent transparent darkgrey transparent;
+    }
+    .employees-th.desc:after {
+        display: block;
+        border-style: solid;
+        border-width: 10px 5px 0 5px;
+        border-color: darkgrey transparent transparent transparent;
+    }
+    .author {
+        color: cadetblue;
+    }
+}
