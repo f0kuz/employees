@@ -44,7 +44,6 @@ class EmployeesTable extends Component {
                             })
                         }
                     </tbody>
-                    <caption className="small text-right mr-3">recruitment task by trainee <strong className="author">Marcin Groszkiewicz</strong></caption>
                 </table>
             </div>
         )

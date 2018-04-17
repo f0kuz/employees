@@ -112,7 +112,6 @@ class App extends Component {
     return (
       <React.Fragment>
         <header>
-          <h1 className="app-title">Hello, xsolve.</h1>
         </header>
         <main>
           <div className="container-fluid">
