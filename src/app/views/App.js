@@ -22,6 +22,8 @@ class App extends Component {
       employeesData: allEmployeesData,
       filteredIDFrom: "",
       filteredIDTo: "",
+      filteredFirstName: "",
+      filteredLastName: "",
       columnToSort: "",
       sortDirection: "asc",
     }
@@ -33,40 +35,47 @@ class App extends Component {
     this.setState(prevState => ({
       filteredIDFrom: e.target.value,
       employeesData: prevState.employeesData === this.state.employeesData
-        ? allEmployeesData.filter(elem => {
-          if (elem.id >= e.target.value) {
-            return true;
-          }
-        })
+        ? allEmployeesData.filter(elem => elem.id >= e.target.value)
         :
-        this.state.employeesData.filter(elem => {
-          if (elem.id >= e.target.value) {
-            return true;
-          }
-        })
+        this.state.employeesData.filter(elem => elem.id >= e.target.value)
     }))
   }
 
+  // TODO: Conditions for improvement
   handleFilteringIDTo = e => {
     e.persist();
     this.setState(prevState => ({
       filteredIDTo: e.target.value,
       employeesData: prevState.employeesData !== this.state.employeesData
-        ? allEmployeesData.filter(elem => {
-          if (elem.id <= e.target.value) {
-            return true;
-          }
-        })
+        ? allEmployeesData.filter(elem => elem.id <= e.target.value)
         :
-        this.state.employeesData.filter(elem => {
-          if (elem.id <= e.target.value) {
-            return true;
-          }
-        })
+        this.state.employeesData.filter(elem => elem.id <= e.target.value)
     }))
   }
 
-  // TODO: resolve issue with sortBy("dateOfBirth")
+  handleFilteringFirstName = e => {
+    e.persist();
+    const text = e.target.value;
+    const filteredFirstNameResult = allEmployeesData.filter(user => 
+      user.firstName.toLowerCase().includes(text.toLowerCase()));
+    this.setState({
+      filteredFirstName: e.target.value,
+      employeesData: filteredFirstNameResult
+    })
+  }
+
+  handleFilteringLastName = e => {
+    e.persist();
+    const text = e.target.value;
+    const filteredLastNameResult = allEmployeesData.filter(user =>
+      user.lastName.toLowerCase().includes(text.toLowerCase()));
+    this.setState({
+      filteredLastName: e.target.value,
+      employeesData: filteredLastNameResult
+    })
+  }
+
+  // TODO: Resolve issue with sortBy("dateOfBirth")
   sortBy = columnName => {
     this.setState(state => ({
       columnToSort: columnName,
@@ -77,6 +86,7 @@ class App extends Component {
   componentDidUpdate() {
     this.handleFilteringIDFrom.bind(this);
     this.handleFilteringIDTo.bind(this);
+    this.handleFilteringFirstName.bind(this);
   }
 
   render() {
@@ -118,11 +128,12 @@ class App extends Component {
           <div className="container-fluid">
             <div className="row">
               <div className="col-12 col-md-3">
+                {/* TODO: Filters should be in separate component */}
                 <div className="filters-wrapper">
                   <p className="lead">Filtry</p>
                   <Form>
                     <FormGroup>
-                      <Label for="exampleNumber">ID</Label>
+                      <Label>ID</Label>
                       <Input
                         onChange={this.handleFilteringIDFrom}
                         value={this.state.filteredIDFrom}
@@ -140,6 +151,30 @@ class App extends Component {
                         name="id-number"
                         id="id-to"
                         placeholder="Do"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="fName">First Name</Label>
+                      <Input
+                        onChange={this.handleFilteringFirstName}
+                        value={this.state.filteredFirstName}
+                        bsSize="sm"
+                        type="text"
+                        name="fName"
+                        id="id-fName"
+                        placeholder="Szukaj"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="lName">Last Name</Label>
+                      <Input
+                        onChange={this.handleFilteringLastName}
+                        value={this.state.filteredLastName}
+                        bsSize="sm"
+                        type="text"
+                        name="lName"
+                        id="id-lName"
+                        placeholder="Szukaj"
                       />
                     </FormGroup>
                   </Form>
