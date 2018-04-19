@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { orderBy } from 'lodash';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import DateTimePicker from 'react-datetime-picker'
 import './../../css/App.css';
+import classNames from 'classnames';
 
 import data from './../../data/data.json';
 import EmployeesTable from '../../employees-table/components/EmployeesTable';
+
 
 
 const invertDirection = {
@@ -24,55 +27,92 @@ class App extends Component {
       filteredIDTo: "",
       filteredFirstName: "",
       filteredLastName: "",
+      filteredDate: new Date(),
+      filteredCompany: "",
+      filteredNote: "",
       columnToSort: "",
       sortDirection: "asc",
+      hideFilters: true
     }
   }
 
-  // TODO: Conditions for improvement
+  // TODO: Conditions for improvement for all filtering methods
   handleFilteringIDFrom = e => {
     e.persist();
     this.setState(prevState => ({
       filteredIDFrom: e.target.value,
       employeesData: prevState.employeesData === this.state.employeesData
-        ? allEmployeesData.filter(elem => elem.id >= e.target.value)
-        :
-        this.state.employeesData.filter(elem => elem.id >= e.target.value)
+        ? allEmployeesData.filter(employee => employee.id >= e.target.value)
+        : this.state.employeesData.filter(employee => employee.id >= e.target.value)
     }))
   }
 
-  // TODO: Conditions for improvement
   handleFilteringIDTo = e => {
     e.persist();
     this.setState(prevState => ({
       filteredIDTo: e.target.value,
       employeesData: prevState.employeesData !== this.state.employeesData
-        ? allEmployeesData.filter(elem => elem.id <= e.target.value)
-        :
-        this.state.employeesData.filter(elem => elem.id <= e.target.value)
+        ? allEmployeesData.filter(employee => employee.id <= e.target.value)
+        : this.state.employeesData.filter(employee => employee.id <= e.target.value)
     }))
   }
 
   handleFilteringFirstName = e => {
     e.persist();
-    const text = e.target.value;
-    const filteredFirstNameResult = allEmployeesData.filter(user => 
-      user.firstName.toLowerCase().includes(text.toLowerCase()));
-    this.setState({
+    this.setState(prevState => ({
       filteredFirstName: e.target.value,
-      employeesData: filteredFirstNameResult
-    })
+      employeesData: prevState.employeesData === this.state.employeesData
+        ? allEmployeesData.filter(employee =>
+          employee.firstName.toLowerCase().includes(e.target.value.toLowerCase()))
+        : this.state.employeesData.filter(employee =>
+          employee.firstName.toLowerCase().includes(e.target.value.toLowerCase()))
+    }))
   }
 
   handleFilteringLastName = e => {
     e.persist();
-    const text = e.target.value;
-    const filteredLastNameResult = allEmployeesData.filter(user =>
-      user.lastName.toLowerCase().includes(text.toLowerCase()));
-    this.setState({
+    this.setState(prevState => ({
       filteredLastName: e.target.value,
-      employeesData: filteredLastNameResult
-    })
+      employeesData: prevState.employeesData === this.state.employeesData
+        ? allEmployeesData.filter(employee =>
+          employee.lastName.toLowerCase().includes(e.target.value.toLowerCase()))
+        : this.state.employeesData.filter(employee =>
+          employee.lastName.toLowerCase().includes(e.target.value.toLowerCase()))
+    }))
+  }
+
+  handleFilteringDate = date => {
+    this.setState(prevState => ({
+      filteredDate: date,
+      employeesData: prevState.employeesData === this.state.employeesData
+      ? allEmployeesData.filter(employee => employee.dateOfBirth === date)
+      : this.state.employeesData.filter(employee => employee.dateOfBirth === date)
+    }))
+  }
+
+  handleFilteringCompany = e => {
+    e.persist();
+    this.setState(prevState => ({
+      filteredCompany: e.target.value,
+      employeesData: prevState.employeesData === this.state.employeesData
+        ? allEmployeesData.filter(employee =>
+          employee.company.toLowerCase().includes(e.target.value.toLowerCase()))
+        : this.state.employeesData.filter(employee =>
+          employee.company.toLowerCase().includes(e.target.value.toLowerCase()))
+    }))
+  }
+
+  // TODO: Filtering by Note will be implement the same way as by ID. For now is like this.
+  handleFilteringNote = e => {
+    e.persist();
+    this.setState(prevState => ({
+      filteredNote: e.target.value,
+      employeesData: prevState.employeesData === this.state.employeesData
+        ? allEmployeesData.filter(employee =>
+          employee.note.toString().includes(e.target.value.toString()))
+        : this.state.employeesData.filter(employee =>
+          employee.note.toString().includes(e.target.value.toString()))
+    }))
   }
 
   // TODO: Resolve issue with sortBy("dateOfBirth")
@@ -83,10 +123,10 @@ class App extends Component {
     }))
   }
 
-  componentDidUpdate() {
-    this.handleFilteringIDFrom.bind(this);
-    this.handleFilteringIDTo.bind(this);
-    this.handleFilteringFirstName.bind(this);
+  handleShowingFilters = () => {
+    this.setState({
+      hideFilters: !this.state.hideFilters
+    })
   }
 
   render() {
@@ -119,10 +159,17 @@ class App extends Component {
 
     const sortedData = orderBy(this.state.employeesData, this.state.columnToSort, this.state.sortDirection);
 
+    const filtersClassName = classNames(
+      {"hide-filters": this.state.hideFilters},
+      {"show-filters": !this.state.hideFilters}
+    )
+
+    const showHideFiltersText = this.state.hideFilters ? "Pokaż filtry" : "Ukryj filtry"
+
     return (
       <React.Fragment>
         <header>
-          <h1 className="app-title">Employees Table</h1>
+          <h1 className="app-title">Employees Data</h1>
         </header>
         <main>
           <div className="container-fluid">
@@ -130,8 +177,11 @@ class App extends Component {
               <div className="col-12 col-md-3">
                 {/* TODO: Filters should be in separate component */}
                 <div className="filters-wrapper">
-                  <p className="lead">Filtry</p>
-                  <Form>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p className="lead filters-title">Filtry</p>
+                    <Button onClick={this.handleShowingFilters} size="sm" >{showHideFiltersText}</Button>
+                  </div>
+                  <Form className={filtersClassName} >
                     <FormGroup>
                       <Label>ID</Label>
                       <Input
@@ -174,6 +224,38 @@ class App extends Component {
                         type="text"
                         name="lName"
                         id="id-lName"
+                        placeholder="Szukaj"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label>Date of Birth</Label><br />
+                      <DateTimePicker
+                        value={this.state.filteredDate}
+                        onChange={this.handleFilteringDate}
+                        placeholderText="Kliknij aby wybrać datę"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="company">Company</Label>
+                      <Input
+                        onChange={this.handleFilteringCompany}
+                        value={this.state.filteredCompany}
+                        bsSize="sm"
+                        type="text"
+                        name="company"
+                        id="id-company"
+                        placeholder="Szukaj"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="note">Note</Label>
+                      <Input
+                        onChange={this.handleFilteringNote}
+                        value={this.state.filteredNote}
+                        bsSize="sm"
+                        type="text"
+                        name="note"
+                        id="id-note"
                         placeholder="Szukaj"
                       />
                     </FormGroup>

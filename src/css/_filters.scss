@@ -1,0 +1,20 @@
+.filters-wrapper {
+    padding: 10px;
+    background: lightgrey;
+    border-radius: 6px;
+    [id="id-from"] {
+        margin-bottom: 5px;
+    }
+    .filters-title {
+        display: inline-block;
+        margin-bottom: 0;
+    }
+    .show-filters {
+        padding-top: 8px;
+        height: auto;
+    }
+    .hide-filters {
+        height: 0;
+        overflow: hidden;
+    }
+}
